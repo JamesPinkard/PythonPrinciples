@@ -19,17 +19,23 @@ class ClickerState:
     """
     
     def __init__(self):
+        '''
+        Constructor
+        '''
         self._total_cookies = 0.0
         self._current_cookies = 0.0
         self._current_time = 0.0
         self._cookies_per_second = 1.0
-        self._history_list = [0.0, None, 0.0, 0.0]
+        self._history_list = [(0.0, None, 0.0, 0.0)]
         
     def __str__(self):
         """
         Return human readable state
         """
-        return ""
+        return '''Total Cookies: {0}
+        Current Cookies: {1}
+        Current Time: {2}
+        Cookies Per Second: {3}'''.format(self._total_cookies, self._current_cookies, self._current_time, self._cookies_per_second)
         
     def get_cookies(self):
         """
@@ -38,7 +44,7 @@ class ClickerState:
         
         Should return a float
         """
-        return 0.0
+        return self._current_cookies
     
     def get_cps(self):
         """
@@ -46,7 +52,7 @@ class ClickerState:
 
         Should return a float
         """
-        return 0.0
+        return self._cookies_per_second
     
     def get_time(self):
         """
@@ -54,7 +60,7 @@ class ClickerState:
 
         Should return a float
         """
-        return 0.0
+        return self._current_time
     
     def get_history(self):
         """
@@ -65,7 +71,7 @@ class ClickerState:
 
         For example: (0.0, None, 0.0, 0.0)
         """
-        return []
+        return self._history_list
 
     def time_until(self, cookies):
         """
@@ -74,7 +80,10 @@ class ClickerState:
 
         Should return a float with no fractional part
         """
-        return 0.0
+        time_until_cookies = cookies / self._cookies_per_second
+        if not time_until_cookies.is_integer():
+            time_until_cookies = int(time_until_cookies) +  1.0
+        return time_until_cookies
     
     def wait(self, time):
         """
