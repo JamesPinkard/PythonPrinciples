@@ -2,13 +2,13 @@
 Cookie Clicker Simulator
 """
 
-import simpleplot
+#import simpleplot
 
 # Used to increase the timeout, if necessary
-import codeskulptor
-codeskulptor.set_timeout(20)
+#import codeskulptor
+#codeskulptor.set_timeout(20)
 
-import poc_clicker_provided as provided
+#import poc_clicker_provided as provided
 
 # Constants
 SIM_TIME = 10000000000.0
@@ -19,7 +19,11 @@ class ClickerState:
     """
     
     def __init__(self):
-        pass
+        self._total_cookies = 0.0
+        self._current_cookies = 0.0
+        self._current_time = 0.0
+        self._cookies_per_second = 1.0
+        self._history_list = [0.0, None, 0.0, 0.0]
         
     def __str__(self):
         """
@@ -129,12 +133,12 @@ def strategy_expensive(cookies, cps, time_left, build_info):
 def strategy_best(cookies, cps, time_left, build_info):
     return None
         
-def run_strategy(strategy_name, time, strategy):
-    """
-    Run a simulation with one strategy
-    """
-    state = simulate_clicker(provided.BuildInfo(), time, strategy)
-    print strategy_name, ":", state
+#def run_strategy(strategy_name, time, strategy):
+    #"""
+    #Run a simulation with one strategy
+    #"""
+    #state = simulate_clicker(provided.BuildInfo(), time, strategy)
+    #print strategy_name, ":", state
 
     # Plot total cookies over time
 
@@ -145,17 +149,17 @@ def run_strategy(strategy_name, time, strategy):
     # history = [(item[0], item[3]) for item in history]
     # simpleplot.plot_lines(strategy_name, 1000, 400, 'Time', 'Total Cookies', [history], True)
 
-def run():
-    """
-    Run the simulator.
-    """    
-    run_strategy("Cursor", SIM_TIME, strategy_cursor)
+#def run():
+    #"""
+    #Run the simulator.
+    #"""    
+    #run_strategy("Cursor", SIM_TIME, strategy_cursor)
 
     # Add calls to run_strategy to run additional strategies
     # run_strategy("Cheap", SIM_TIME, strategy_cheap)
     # run_strategy("Expensive", SIM_TIME, strategy_expensive)
     # run_strategy("Best", SIM_TIME, strategy_best)
     
-run()
+#run()
     
 

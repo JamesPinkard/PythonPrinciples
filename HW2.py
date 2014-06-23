@@ -4,6 +4,8 @@ Simulator for resource generation with upgrades
 
 #import simpleplot
 import math
+import matplotlib.pyplot as plt
+
 #import codeskulptor
 #codeskulptor.set_timeout(20)
 
@@ -67,10 +69,23 @@ class ResourceScenario():
 
 def my_test():
     data = ResourceScenario()
-    resources1 = data.resources_vs_time(0.0,10)
-    resources2 = data.resources_vs_time(1.0,10)
-    print(resources1)
-    print(resources2)
+    resources1 = data.resources_vs_time(0.0,600)
+    resources2 = data.resources_vs_time(0.5,10)
+    resources3 = data.resources_vs_time(1.0,10)
+    resources4 = data.resources_vs_time(2.0,10)
+    x1 = [math.log(p[0]) for p in resources1]
+    y1 = [math.log(p[1]) for p in resources1]
+    x2 = [p[0] for p in resources2]
+    y2 = [p[1] for p in resources2]
+    x3 = [math.log(p[0]) for p in resources3]
+    y3 = [math.log(p[1]) for p in resources3]
+    x4 = [p[0] for p in resources4]
+    y4 = [p[1] for p in resources4]    
+    print(resources3)
+    #plt.plot(x1,y1, 'r', x2, y2, 'g',x3,y3, 'b', x4,y4, 'm')
+    plt.plot(x3,y3)
+    plt.show()
+    
     
 my_test()
     
