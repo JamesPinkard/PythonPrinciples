@@ -80,7 +80,7 @@ class ClickerState:
 
         Should return a float with no fractional part
         """
-        time_until_cookies = cookies / self._cookies_per_second
+        time_until_cookies = (cookies - self._current_cookies) / self._cookies_per_second
         if not time_until_cookies.is_integer():
             time_until_cookies = int(time_until_cookies) +  1.0
         return time_until_cookies

@@ -218,7 +218,22 @@ class ClickerStateTimeUntilTests(unittest.TestCase):
         
         self.actual = self.tester_object.time_until(number_of_cookies)
         
-        self.verify_expected_equals_actual()        
+        self.verify_expected_equals_actual()
+        
+    def test_TimeUntil_TwoCookiesPerSecondsCurrentlyWithTwoCookiesSevenCookieInquiery_ReturnTwenty(self):
+        
+        self.expected = 3.0
+        number_of_cookies = 7.0
+        self.tester_object._cookies_per_second = 2
+        self.tester_object._current_cookies = 2
+        
+        self.actual = self.tester_object.time_until(number_of_cookies)
+        
+        self.verify_expected_equals_actual()
+        
+    
+        
+    
     
 
     
