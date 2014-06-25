@@ -231,6 +231,125 @@ class ClickerStateTimeUntilTests(unittest.TestCase):
         
         self.verify_expected_equals_actual()
         
+class ClickerStateWaitTests(unittest.TestCase):
+    """
+    This class is a unit tester of the get methods for the "Clicker State" class for the Cookie Clicker assignement
+    """
+    def setUp(self):
+        self.tester_object = ClickerState()
+        self.expected = 0.0
+        self.actual = 1.0
+        
+    
+    def verify_expected_equals_actual(self):
+        """
+        Tests whether the expected value is equal to the actual value
+        """
+        self.assertEqual(self.expected, self.actual)
+        
+    def test_Wait_InitialToTenSeconds_CheckStatusForTen(self):
+        self.expected = [10.0,10.0,10.0]
+        
+        self.tester_object.wait(10.0)
+        actual_total_cookies= self.tester_object._total_cookies
+        actual_current_cookies= self.tester_object._current_cookies
+        actual_current_time= self.tester_object._current_time
+        self.actual=[actual_current_cookies,actual_current_time,actual_total_cookies]
+        
+        self.verify_expected_equals_actual()
+        
+    def test_Wait_ThreeCPSWaitForTenSeconds_StateOfThirtyCookiesInTenSeconds(self):
+        self.set_expected_end_status(30.0,10.0,30.0)
+        self.set_cps(3.0)
+        
+        self.object_wait(10.0)
+        
+        self.verify_expected_equals_actual()
+        
+    def test_Wait_ThreeCPSTenTotalCookiesFiveCurrentCookiesWaitForTwentySeconds_StateOfSeventyTotalInTwentySeconds(self):
+        self.set_expected_end_status(65.0,20.0,70.0)
+        self.tester_object._current_cookies= 5.0
+        self.tester_object._total_cookies = 10.0
+        self.set_cps(3.0)
+        
+        self.object_wait(20.0)
+        
+        self.verify_expected_equals_actual()
+        
+    def set_expected_end_status(self,current_cookies,current_time,total_cookies):
+        self.expected = [current_cookies,current_time,total_cookies]    
+
+    def set_cps(self,rate):
+        self.tester_object._cookies_per_second = rate
+        
+
+        
+
+    def object_wait(self, time):
+        self.tester_object.wait(time)
+        actual_total_cookies= self.tester_object._total_cookies
+        actual_current_cookies= self.tester_object._current_cookies
+        actual_current_time= self.tester_object._current_time
+        self.actual=[actual_current_cookies,actual_current_time,actual_total_cookies]
+    
+        
+        
+class ClickerStateBuyTests(unittest.TestCase):
+    """
+    This class is a unit tester of the get methods for the "Clicker State" class for the Cookie Clicker assignement
+    """
+    def setUp(self):
+        self.tester_object = ClickerState()
+        self.expected_cps = 0.0
+        self.expected_history = [(None,None,None,None)]
+        self.expected_current_cookies = 0.0
+               
+        
+    
+    def verify_history_time_and_cookies(self):
+        """
+        Tests whether the expected value is equal to the actual value
+        """
+        self.assertEqual(self.expected_cps, self.tester_object._cookies_per_second)
+        self.assertEqual(self.expected_history, self.tester_object._history_list)
+        self.assertEqual(self.expected_current_cookies, self.tester_object._current_cookies)
+        
+    def test_BuyItem_InitialBuyClickerCantAfford_UnalteredState(self):
+        self.expected_cps = 1.0
+        self.expected_history = [(0.0, None, 0.0, 0.0)]
+        self.expected_current_cookies = 0.0
+        
+        self.tester_object.buy_item("Clicker", 5.0, 1.0)
+        
+        self.verify_history_time_and_cookies()
+        
+    def test_BuyItem_FiveCookiesBuyClicker_StateOfZeroCookiesAndTwoCPS(self):
+        self.expected_cps = 2.0
+        self.expected_history = [(0.0, None, 0.0, 0.0), (5.0, "Clicker", 5.0, 5.0)]
+        self.expected_current_cookies = 0.0
+        self.tester_object._current_cookies = 5.0
+        self.tester_object._total_cookies = 5.0
+        self.tester_object._current_time = 5.0
+        
+        self.tester_object.buy_item("Clicker", 5.0, 1.0)
+        
+        self.verify_history_time_and_cookies()
+        
+    def test_BuyItem_ThirteenCookiesBuyTwoClickers_StateOfThreeCookiesAndThreeCPS(self):
+        self.expected_cps = 3.0
+        self.expected_current_cookies = 3.0
+        self.expected_history = [(0.0, None, 0.0, 0.0), (13.0, "Clicker", 5.0, 13.0),(13.0, "Clicker", 5.0, 13.0)]
+        self.tester_object._current_cookies = 13.0
+        self.tester_object._total_cookies = 13.0
+        self.tester_object._current_time = 13.0
+        
+        self.tester_object.buy_item("Clicker", 5.0, 1.0)
+        self.tester_object.buy_item("Clicker", 5.0, 1.0)
+        
+        self.verify_history_time_and_cookies()
+        
+        
+        
     
         
     
