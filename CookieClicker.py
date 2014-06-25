@@ -32,10 +32,10 @@ class ClickerState:
         """
         Return human readable state
         """
-        return '''Total Cookies: {0}
-        Current Cookies: {1}
-        Current Time: {2}
-        Cookies Per Second: {3}'''.format(self._total_cookies, self._current_cookies, self._current_time, self._cookies_per_second)
+        return 'Total Cookies: ' + str(self._total_cookies) + '\n' + \
+        'Current Cookies: ' + str(self._current_cookies) + '\n' + \
+        'Current Time: ' +  str(self._current_time) + '\n' + \
+        'Cookies Per Second: ' + str(self._cookies_per_second)
         
     def get_cookies(self):
         """
@@ -81,9 +81,10 @@ class ClickerState:
         Should return a float with no fractional part
         """
         time_until_cookies = (cookies - self._current_cookies) / self._cookies_per_second
-        if not time_until_cookies.is_integer():
+        time_remainder = time_until_cookies - int(time_until_cookies)
+        if time_remainder > 0.0:
             time_until_cookies = int(time_until_cookies) +  1.0
-        return time_until_cookies
+        return float(time_until_cookies)
     
     def wait(self, time):
         """
@@ -93,7 +94,7 @@ class ClickerState:
         """
         self._total_cookies += time * self._cookies_per_second
         self._current_cookies += time * self._cookies_per_second
-        self._current_time = time 
+        self._current_time += time 
     
     def buy_item(self, item_name, cost, additional_cps):
         """
@@ -118,9 +119,41 @@ def simulate_clicker(build_info, duration, strategy):
     duration with the given strategy.  Returns a ClickerState
     object corresponding to game.
     """
-
-    # Replace with your code
-    return ClickerState()
+    simulator_build_info = build_info.clone()
+    simulator_state = ClickerState()
+    current_time = simulator_state.get_time()
+    time_left = duration - current_time    
+    
+    while time_left >= 0.0:
+        
+        cookies = simulator_state.get_cookies()
+        cookie_rate = simulator_state.get_cps()
+        current_time = simulator_state.get_time()
+        time_left = duration - current_time
+        
+        if time_left <= 0:
+            break
+        
+        recommended_item = strategy(cookies, cookie_rate, time_left, simulator_build_info)
+        if recommended_item == None:
+            break
+        
+        recommended_item_cost = simulator_build_info.get_cost(recommended_item)
+        time_until_recommended_item = simulator_state.time_until(recommended_item_cost)
+        if time_until_recommended_item > time_left:
+            break
+        
+        simulator_state.wait(time_until_recommended_item)
+        recommended_item_cps = simulator_build_info.get_cps(recommended_item)
+        simulator_state.buy_item(recommended_item, recommended_item_cost, recommended_item_cps)
+        simulator_build_info.update_item(recommended_item)
+        
+    if current_time < duration:
+        simulator_state.wait(duration - current_time)
+            
+    print(simulator_state.get_history())
+    
+    return simulator_state
 
 
 def strategy_cursor(cookies, cps, time_left, build_info):

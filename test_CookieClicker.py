@@ -1,6 +1,6 @@
 import unittest
 import random
-from CookieClicker import ClickerState
+from CookieClicker import *
 
 
 class ClickerStateInitializeTests(unittest.TestCase):
@@ -348,8 +348,16 @@ class ClickerStateBuyTests(unittest.TestCase):
         
         self.verify_history_time_and_cookies()
         
+
+class SimulateClickerTests(unittest.TestCase):
+    
+    def test_SimulateClicker_TimePassedSimulationDurationOfTwentySeconds_BreakOutOfLoop(self):
+        expected_time = 20.0
         
+        actual_state = simulate_clicker(build_info, duration, strategy)
+        actual_time = actual_state._current_time
         
+        self.assertEqual(expected_time, actual_time)
     
         
     
