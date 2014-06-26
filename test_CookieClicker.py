@@ -57,10 +57,10 @@ class ClickerStateStrTests(unittest.TestCase):
     
     
     def test_StrMethod_CallStringOnInitializedClickerState_ReturnStringOfCookieAndTimeStatus(self):
-        expected = '''Total Cookies: 0.0
-        Current Cookies: 0.0
-        Current Time: 0.0
-        Cookies Per Second: 1.0'''
+        expected = 'Total Cookies: 0.0\n' \
+        'Current Cookies: 0.0\n' + \
+        'Current Time: 0.0\n' + \
+        'Cookies Per Second: 1.0'
         test_ClickerStateObject = ClickerState()
         
         actual = str(test_ClickerStateObject)
@@ -68,10 +68,10 @@ class ClickerStateStrTests(unittest.TestCase):
         self.assertEqual(expected,  actual)
         
     def test_StrMethod_CallStringOnAllTwoStatus_ReturnStringOfAllTwo(self):
-        expected = '''Total Cookies: 2.0
-        Current Cookies: 2.0
-        Current Time: 2.0
-        Cookies Per Second: 2.0'''        
+        expected = 'Total Cookies: 2.0\n' \
+        'Current Cookies: 2.0\n' + \
+        'Current Time: 2.0\n' + \
+        'Cookies Per Second: 2.0'         
         self.tester_object._total_cookies = 2.0
         self.tester_object._current_cookies = 2.0
         self.tester_object._current_time = 2.0
@@ -348,16 +348,6 @@ class ClickerStateBuyTests(unittest.TestCase):
         
         self.verify_history_time_and_cookies()
         
-
-class SimulateClickerTests(unittest.TestCase):
-    
-    def test_SimulateClicker_TimePassedSimulationDurationOfTwentySeconds_BreakOutOfLoop(self):
-        expected_time = 20.0
-        
-        actual_state = simulate_clicker(build_info, duration, strategy)
-        actual_time = actual_state._current_time
-        
-        self.assertEqual(expected_time, actual_time)
     
         
     

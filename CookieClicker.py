@@ -2,13 +2,13 @@
 Cookie Clicker Simulator
 """
 
-#import simpleplot
+import simpleplot
 
 # Used to increase the timeout, if necessary
-#import codeskulptor
-#codeskulptor.set_timeout(20)
+import codeskulptor
+codeskulptor.set_timeout(20)
 
-#import poc_clicker_provided as provided
+import poc_clicker_provided as provided
 
 # Constants
 SIM_TIME = 10000000000.0
@@ -151,7 +151,6 @@ def simulate_clicker(build_info, duration, strategy):
     if current_time < duration:
         simulator_state.wait(duration - current_time)
             
-    print(simulator_state.get_history())
     
     return simulator_state
 
@@ -177,40 +176,130 @@ def strategy_none(cookies, cps, time_left, build_info):
     return None
 
 def strategy_cheap(cookies, cps, time_left, build_info):
-    return None
+    """
+    Always buys the cheapest item
+    """
+    
+    available_items = build_info.build_items()
+    costs_of_items = [build_info.get_cost(item) for item in available_items]
+    cookies_left = cookies + (cps * time_left)
+    available_costs = []
+    for item_cost in costs_of_items:
+        if item_cost <= cookies_left:
+            available_costs.append(item_cost)
+    
+    if available_costs == []:
+        return None
+    
+    min_cost = min(available_costs)
+    for item in available_items:
+        if build_info.get_cost(item) == min_cost:
+            recommended_item = item
+    return recommended_item
 
 def strategy_expensive(cookies, cps, time_left, build_info):
-    return None
+    """
+    Always buys the most expensive item
+    """
+    available_items = build_info.build_items()
+    costs_of_items = [build_info.get_cost(item) for item in available_items]
+    cookies_left = cookies + (cps * time_left)
+    available_costs = []
+    for item_cost in costs_of_items:
+        if item_cost <= cookies_left:
+            available_costs.append(item_cost)
+    
+    if available_costs == []:
+        return None
+    
+    max_cost = max(available_costs)
+    for item in available_items:
+        if build_info.get_cost(item) == max_cost:
+            recommended_item = item
+    return recommended_item
 
 def strategy_best(cookies, cps, time_left, build_info):
-    return None
+    """
+    Always buys the item with the highest rate per cost
+    """
+    available_items = build_info.build_items()
+    costs_of_items = [build_info.get_cost(item) for item in available_items]
+    cookies_left = cookies + (cps * time_left)
+    available_costs = get_available_costs(costs_of_items, cookies_left)
+    
+    
+    if available_costs == []:
+        return None
+          
+    rate_per_cost_dict = get_rate_per_cost_dict(available_items, available_costs, build_info)
+    rpc = get_rpc(rate_per_cost_dict)
+    max_rate_per_cost = max(rpc)
+    recommended_item = rate_per_cost_dict[max_rate_per_cost]
+            
+    return recommended_item
+
+def get_available_costs(costs_of_items, cookies_left):
+    """
+    returns costs for items that can be bought within the time limit
+    """
+    available_costs = []
+    for item_cost in costs_of_items:
+        if item_cost <= cookies_left:
+            available_costs.append(item_cost)
+            
+    return available_costs
+
+def get_rate_per_cost_dict(available_items, available_costs, build_info):
+    """
+    returns dictionary of items and the rate per cost
+    """
+    rate_per_cost_dict = {}
+    for item in available_items:
+        if build_info.get_cost(item) in available_costs:
+            available_item_cost = build_info.get_cost(item)
+            available_item_rate = build_info.get_cps(item)
+            rate_per_cost = available_item_rate/available_item_cost
+            
+            rate_per_cost_dict[rate_per_cost] = item
+    return rate_per_cost_dict
+
+def get_rpc(rate_per_cost_dict):
+    """
+    returns list of rates per costs
+    """
+            
+    rpc = []
+    for rate in rate_per_cost_dict.keys():
+        rpc.append(rate)
         
-#def run_strategy(strategy_name, time, strategy):
-    #"""
-    #Run a simulation with one strategy
-    #"""
-    #state = simulate_clicker(provided.BuildInfo(), time, strategy)
-    #print strategy_name, ":", state
+    return rpc
+        
+def run_strategy(strategy_name, time, strategy):
+    """
+    Run a simulation with one strategy
+    """
+    state = simulate_clicker(provided.BuildInfo(), time, strategy)
+    print strategy_name, ":", state
 
     # Plot total cookies over time
 
     # Uncomment out the lines below to see a plot of total cookies vs. time
     # Be sure to allow popups, if you do want to see it
 
-    # history = state.get_history()
-    # history = [(item[0], item[3]) for item in history]
-    # simpleplot.plot_lines(strategy_name, 1000, 400, 'Time', 'Total Cookies', [history], True)
+    #history = state.get_history()
+    #history = [(item[0], item[3]) for item in history]
+    #simpleplot.plot_lines(strategy_name, 1000, 400, 'Time', 'Total Cookies', [history], True)
 
-#def run():
-    #"""
-    #Run the simulator.
-    #"""    
-    #run_strategy("Cursor", SIM_TIME, strategy_cursor)
+def run():
+    """
+    Run the simulator.
+    """    
+    #run_strategy("Cheap", SIM_TIME, strategy_cheap)
 
     # Add calls to run_strategy to run additional strategies
     # run_strategy("Cheap", SIM_TIME, strategy_cheap)
-    # run_strategy("Expensive", SIM_TIME, strategy_expensive)
-    # run_strategy("Best", SIM_TIME, strategy_best)
+    #run_strategy("Expensive", SIM_TIME, strategy_expensive)
+    run_strategy("Best", SIM_TIME, strategy_best)
     
 #run()
     
